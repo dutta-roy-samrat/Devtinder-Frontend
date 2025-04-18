@@ -1,0 +1,31 @@
+.connectionsContainer {
+  @apply flex items-center justify-center p-10;
+}
+
+.connectionCardContainer {
+  @apply flex w-full max-w-lg flex-col items-center justify-between gap-6 rounded-lg bg-black px-5 py-5 text-white shadow-md shadow-gray-800 lg:min-h-fit lg:max-w-screen-md lg:flex-row lg:px-8;
+}
+
+.connectionsHeader {
+  @apply hidden;
+}
+
+.cardContent {
+  @apply flex flex-col items-center gap-2 md:flex-row;
+}
+
+.connectionAvatar {
+  @apply h-16 w-16;
+}
+
+.connectionName {
+  @apply text-sm font-semibold;
+}
+
+.connectionCardFooter {
+  @apply flex gap-2;
+}
+
+.messageBtn {
+  @apply rounded-full border-2 border-black bg-red-500 hover:border-white hover:bg-black hover:text-red-500;
+}

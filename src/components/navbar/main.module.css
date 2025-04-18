@@ -1,5 +1,5 @@
 .navbarContainer {
-  @apply flex items-center justify-between rounded-b-lg bg-black px-11 py-8 lg:mx-16 lg:max-h-24 lg:rounded-3xl;
+  @apply flex items-center justify-between rounded-b-lg bg-black px-11 py-8 lg:mx-16 lg:mt-10 lg:max-h-24 lg:rounded-3xl;
 }
 
 .navLogo {

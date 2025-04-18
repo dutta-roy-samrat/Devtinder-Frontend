@@ -1,0 +1,23 @@
+.profileViewTrigger {
+  @apply rounded-full border-2 border-black bg-white text-black hover:border-white hover:bg-black hover:text-white;
+}
+
+.profileViewModalContentContainer {
+  @apply h-full lg:h-fit;
+}
+
+.profileViewDialogHeader {
+  @apply items-center justify-center;
+}
+
+.profileAvatar {
+  @apply h-20 w-20;
+}
+
+.profileViewDialogFooter {
+  @apply sm:items-center sm:justify-center;
+}
+
+.profileDialogCloseBtn {
+  @apply w-full min-w-20 rounded-full bg-red-500 px-6 py-3 text-white;
+}
