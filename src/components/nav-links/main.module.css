@@ -1,0 +1,7 @@
+.navLink {
+  @apply py-3 rounded-full px-6 hover:bg-red-400 text-white text-center;
+}
+
+.selectedNavLink {
+  @apply bg-red-500 underline;
+}

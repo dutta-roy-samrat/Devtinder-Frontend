@@ -1,0 +1,7 @@
+.navbarContainer {
+  @apply flex items-center justify-between rounded-b-lg bg-black px-11 py-8 lg:mx-16 lg:min-h-36 lg:max-h-36 lg:rounded-3xl;
+}
+
+.navLogo {
+  @apply text-2xl font-extrabold text-red-500;
+}
