@@ -1,0 +1,19 @@
+.navLinksContainer {
+  @apply flex gap-2;
+}
+
+.avatar {
+  @apply h-12 w-12 border-4;
+}
+
+.avatarDropdown {
+  @apply flex h-16 items-center justify-center rounded-3xl bg-red-500 p-3;
+}
+
+.avatarDropdownContent {
+  @apply flex h-20 flex-col items-center justify-center p-8;
+}
+
+.logoutBtn {
+  @apply rounded-full;
+}

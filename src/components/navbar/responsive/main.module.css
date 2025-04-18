@@ -1,0 +1,23 @@
+.hamburgerContainer {
+  @apply flex flex-col gap-1;
+}
+
+.hamburgerLines {
+  @apply w-8 border-2;
+}
+
+.drawerContentContainer {
+  @apply border-none bg-black;
+}
+
+.drawerTitle {
+  @apply hidden;
+}
+
+.drawerContent {
+  @apply mx-auto w-full max-w-sm bg-black p-8 text-white;
+}
+
+.drawerClose {
+  @apply rounded-full bg-white py-5 text-center text-black;
+}
