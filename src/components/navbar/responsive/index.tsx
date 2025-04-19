@@ -12,8 +12,11 @@ import { Button } from "@components/ui/button";
 import ResponsiveLoggedInNav from "@components/navbar/responsive/logged-in";
 
 import styles from "./main.module.css";
+import StyledLink from "@components/ui/styled-link";
+import { LOGIN, LOGOUT } from "@constants/routes";
 
 const ResponsiveNav = () => {
+  const isLoggedIn = false; // Replace with actual authentication check
   const renderHamburger = () => (
     <div className={styles.hamburgerContainer}>
       {Array(3)
@@ -36,7 +39,12 @@ const ResponsiveNav = () => {
           <ResponsiveLoggedInNav />
           <DrawerFooter>
             <DrawerClose asChild>
-              <Button className={styles.drawerClose}>Logout</Button>
+              <StyledLink
+                href={isLoggedIn ? LOGOUT.url : LOGIN.url}
+                className={styles.drawerClose}
+              >
+                {isLoggedIn ? LOGOUT.name : LOGIN.name}
+              </StyledLink>
             </DrawerClose>
             <DrawerClose asChild>
               <Button className={styles.drawerClose}>Close</Button>

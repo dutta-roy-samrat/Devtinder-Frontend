@@ -1,4 +1,4 @@
-import NavLinks from "@components/nav-links";
+import NavLinks from "@components/nav-links/logged-in";
 import { Avatar } from "@components/ui/avatar";
 import {
   NavigationMenu,
