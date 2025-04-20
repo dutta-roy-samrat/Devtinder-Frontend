@@ -1,0 +1,11 @@
+.formContainer {
+  @apply w-full max-w-md rounded-none border-none bg-white p-4 py-10 shadow-input shadow-none dark:bg-black md:rounded-2xl md:border md:p-8 md:drop-shadow-2xl;
+}
+
+.formHeader {
+  @apply text-xl font-bold text-neutral-800 dark:text-neutral-200;
+}
+
+.divider {
+  @apply my-8 hidden h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700 md:block;
+}
