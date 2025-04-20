@@ -1,9 +1,9 @@
-"use client";
+-"use client";
 
-import { Label } from "@components/ui/label";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+import { Label, LabelInputContainer } from "@components/ui/label";
 import { Input, InputWrapper } from "@components/ui/input";
-import { cn } from "@lib/utils";
-
 import StyledLink from "@components/ui/styled-link";
 import DatePicker from "@components/ui/date-picker";
 import {
@@ -16,13 +16,29 @@ import {
   SelectValue,
 } from "@components/ui/select";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { DEFAULT_FORM_VALUES } from "@components/forms/registration/constants";
+
 import styles from "./main.module.css";
+import { UserSchema } from "@schema-validations/user";
 
 const RegistrationForm = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const { register, handleSubmit, formState } = useForm({
+    resolver: zodResolver(UserSchema),
+    defaultValues: DEFAULT_FORM_VALUES,
+  });
+
+  console.log(formState, "kklop");
+
+  const onSubmit: SubmitHandler<Omit<User, "profile" | "skills">> = (
+    data,
+    e?: React.BaseSyntheticEvent,
+  ) => {
+    e?.preventDefault();
     console.log("Form submitted");
   };
+
   return (
     <div className={styles.formContainer}>
       <h2 className={styles.formHeader}>
@@ -41,15 +57,19 @@ const RegistrationForm = () => {
         </StyledLink>
       </p>
 
-      <form className="my-8" onSubmit={handleSubmit}>
+      <form className="my-8" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
           <LabelInputContainer>
-            <Label htmlFor="firstname">First name</Label>
-            <Input id="firstname" placeholder="John" type="text" />
+            <Label htmlFor="firstName">First name</Label>
+            <Input placeholder="John" type="text" {...register("firstName")} />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="lastname">Last name</Label>
-            <Input id="lastname" placeholder="Doe" type="text" />
+            <Label htmlFor="lastName">Last name</Label>
+            <Input
+              placeholder="Doe"
+              type="text"
+              {...register("lastName")}
+            />
           </LabelInputContainer>
         </div>
         <LabelInputContainer className="mb-4">
@@ -78,7 +98,7 @@ const RegistrationForm = () => {
                   <SelectLabel>Gender</SelectLabel>
                   <SelectItem value="MALE">Male</SelectItem>
                   <SelectItem value="FEMALE">Female</SelectItem>
-                  <SelectItem value="OTHERS">Others</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -92,20 +112,6 @@ const RegistrationForm = () => {
         </button>
         <div className={styles.divider} />
       </form>
-    </div>
-  );
-};
-
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className={cn("flex w-full flex-col space-y-2", className)}>
-      {children}
     </div>
   );
 };

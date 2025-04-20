@@ -5,6 +5,20 @@ import { Root } from "@radix-ui/react-label";
 
 import { cn } from "@lib/utils";
 
+const LabelInputContainer = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className={cn("flex w-full flex-col space-y-2", className)}>
+      {children}
+    </div>
+  );
+};
+
 const Label = forwardRef<
   ElementRef<typeof Root>,
   ComponentPropsWithoutRef<typeof Root>
@@ -20,4 +34,4 @@ const Label = forwardRef<
 ));
 Label.displayName = Root.displayName;
 
-export { Label };
+export { Label, LabelInputContainer };
