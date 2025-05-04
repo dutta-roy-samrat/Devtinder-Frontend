@@ -41,13 +41,15 @@ const ProfileView = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="text-2xl font-bold text-white">Profile Settings</div>
-      <form className="flex flex-col items-center justify-center">
+    <div className="p-16 flex h-[calc(100vh-96px)] flex-col items-center justify-start md:h-[calc(100vh-176px)] overflow-auto">
+      <div className="m-8 text-2xl font-bold text-white">Profile Settings</div>
+      <form className="flex flex-col items-center justify-evenly">
         <div className="m-4 flex flex-col-reverse items-center justify-center md:flex-row md:items-start md:gap-16">
           <div>
-            <LabelInputContainer className={styles.emailInputContainer}>
-              <Label htmlFor="email">Email Address</Label>
+            <LabelInputContainer>
+              <Label htmlFor="email" className={styles.label}>
+                Email Address
+              </Label>
               <Input
                 id="email"
                 placeholder="johndoe@mail.com"
@@ -58,7 +60,9 @@ const ProfileView = () => {
               <ErrorMsg error={emailError} />
             </LabelInputContainer>
             <LabelInputContainer className={styles.passwordInputContainer}>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className={styles.label}>
+                Password
+              </Label>
               <Input
                 id="password"
                 placeholder="••••••••"
