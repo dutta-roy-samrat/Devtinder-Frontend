@@ -1,14 +1,14 @@
-enum Gender {
+export enum Gender {
   MALE,
   FEMALE,
   OTHER,
 }
 
-type User = {
+export declare type User = {
   firstName: string;
   lastName: string;
-  gender: Gender;
-  dateOfBirth: Date;
+  gender: Gender | string;
+  dateOfBirth: Date | string;
   password: string;
   email: string;
   profile?: {

@@ -48,11 +48,19 @@ const AvatarFallback = forwardRef<
 ));
 AvatarFallback.displayName = Fallback.displayName;
 
-const Avatar = ({ className = "" }: { className?: string }) => {
+const Avatar = ({
+  className = "",
+  src,
+  initials,
+}: {
+  className?: string;
+  src: string;
+  initials: string;
+}) => {
   return (
     <AvatarContainer className={className}>
-      <AvatarImage src="https://github.com/shadcn.png" />
-      <AvatarFallback>CN</AvatarFallback>
+      <AvatarImage src={src} />
+      <AvatarFallback className="bg-slate-400">{initials}</AvatarFallback>
     </AvatarContainer>
   );
 };

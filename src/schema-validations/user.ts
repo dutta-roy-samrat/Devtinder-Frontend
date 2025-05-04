@@ -4,6 +4,8 @@ import validator from "validator";
 import { ProfileSchema } from "@schema-validations/profile";
 import { SkillSchema } from "@schema-validations/skill";
 
+import { Gender } from "types/user";
+
 const UserSchema = z.object({
   firstName: z
     .string()
@@ -43,7 +45,7 @@ const UserSchema = z.object({
   gender: z.preprocess(
     (val) => {
       if (typeof val === "string" && val.trim() === "") return undefined;
-      return val;
+      return Gender[val as keyof typeof Gender];
     },
     z.nativeEnum(Gender, { message: "Invalid gender" }),
   ),

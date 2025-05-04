@@ -1,0 +1,7 @@
+.loaderContainer {
+  @apply flex h-screen w-screen items-center justify-center;
+}
+
+.loader {
+  @apply h-14 w-14 animate-spin;
+}

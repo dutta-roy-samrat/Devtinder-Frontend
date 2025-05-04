@@ -25,7 +25,8 @@
       "@hooks/*": ["hooks/*"],
       "@helpers/*": ["helpers/*"],
       "@contexts/*": ["contexts/*"],
-      "@schema-validations/*": ["schema-validations/*"]
+      "@schema-validations/*": ["schema-validations/*"],
+      "@assets/*": ["assets/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

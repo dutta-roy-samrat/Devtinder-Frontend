@@ -1,0 +1,3 @@
+.pageTransitionContainer {
+  @apply relative overflow-hidden;
+}

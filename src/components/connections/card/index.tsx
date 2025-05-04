@@ -11,23 +11,33 @@ import {
 
 import styles from "./main.module.css";
 
-const Connections = () => {
-  const renderCard = () => (
+const ConnectionsCard = ({ status }: { status: "accepted" | "pending" }) => {
+  const renderButtonBasedOnStatus = () => {
+    if (status === "accepted") {
+      return <Button className={styles.messageBtn}>Message</Button>;
+    }
+    return (
+      <>
+        <Button className={styles.messageBtn}>&#10003;</Button>
+        <Button className={styles.messageBtn}>&#10005;</Button>
+      </>
+    );
+  };
+  return (
     <Card className={styles.connectionCardContainer}>
       <CardHeader className={styles.connectionsHeader}>
         <CardTitle>Samrat</CardTitle>
       </CardHeader>
       <CardContent className={styles.cardContent}>
-        <Avatar className={styles.connectionAvatar} />
+        <Avatar className={styles.connectionAvatar} src="" initials="SD" />
         <div className={styles.connectionName}>Samrat</div>
       </CardContent>
       <CardFooter className={styles.connectionCardFooter}>
         <ViewProfileDialog />
-        <Button className={styles.messageBtn}>Message</Button>
+        {renderButtonBasedOnStatus()}
       </CardFooter>
     </Card>
   );
-  return <div className={styles.connectionsContainer}>{renderCard()}</div>;
 };
 
-export default Connections;
+export default ConnectionsCard;

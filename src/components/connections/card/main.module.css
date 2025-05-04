@@ -1,7 +1,3 @@
-.connectionsContainer {
-  @apply flex items-center justify-center p-10;
-}
-
 .connectionCardContainer {
   @apply flex w-full max-w-lg flex-col items-center justify-between gap-6 rounded-lg bg-black px-5 py-5 text-white shadow-md shadow-gray-800 lg:min-h-fit lg:max-w-screen-md lg:flex-row lg:px-8;
 }
@@ -19,7 +15,7 @@
 }
 
 .connectionName {
-  @apply text-sm font-semibold;
+  @apply text-sm font-semibold max-w-40 truncate;
 }
 
 .connectionCardFooter {

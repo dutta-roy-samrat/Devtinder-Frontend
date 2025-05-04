@@ -1,0 +1,39 @@
+.noMoreProfiles {
+  @apply flex min-h-[400px] items-center justify-center text-white;
+}
+
+.card {
+  @apply flex min-h-[400px] w-80 flex-col items-center justify-evenly gap-8 rounded-3xl bg-black p-7 text-white shadow-xl md:w-96;
+}
+
+.cardHeader {
+  @apply flex flex-col items-center justify-center gap-5;
+}
+
+.avatarContainer {
+  @apply h-36 w-36 rounded-full border-4 border-red-500;
+}
+
+.avatar {
+  @apply h-full w-full;
+}
+
+.cardContent {
+  @apply flex flex-col items-center justify-center gap-4;
+}
+
+.cardFooter {
+  @apply flex items-center justify-center gap-4;
+}
+
+.likeButton {
+  @apply border-white text-black;
+}
+
+.passButton {
+  @apply bg-red-500;
+}
+
+.feedContainer {
+  @apply flex h-[calc(100vh-96px)] items-center justify-center md:h-[calc(100vh-176px)];
+}

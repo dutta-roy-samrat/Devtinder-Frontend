@@ -1,0 +1,7 @@
+.buttonLoaderDefault {
+  @apply h-5 w-5 animate-pulse rounded-full bg-white;
+}
+
+.loaderContainer {
+  @apply flex w-full items-center justify-center gap-x-2;
+}

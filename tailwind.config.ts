@@ -8,6 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      transitionDuration: {
+        '400': '400ms',
+      },
+      animationDuration: {
+        '400': '400ms',
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

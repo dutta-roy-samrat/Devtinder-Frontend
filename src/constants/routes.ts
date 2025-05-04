@@ -1,6 +1,6 @@
 export const CONNECTIONS = { name: "Connections", url: "/connections" };
 export const REQUESTS = { name: "Requests", url: "/requests" };
-export const FEED = { name: "Feed", url: "/" };
+export const FEED = { name: "Feed", url: "/feed" };
 export const PROFILE = { name: "Profile", url: "/profile" };
 
 export const HOME = "/";

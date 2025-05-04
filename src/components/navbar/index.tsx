@@ -5,15 +5,13 @@ import { HOME } from "@constants/routes";
 
 import styles from "./main.module.css";
 
-const Navbar = () => {
-  return (
-    <div className={styles.navbarContainer}>
-      <StyledLink href={HOME} className={styles.navLogo}>
-        Dev Tinder
-      </StyledLink>
-      <ClientSideNav />
-    </div>
-  );
-};
+const Navbar = () => (
+  <div className={styles.navbarContainer}>
+    <StyledLink href={HOME} className={styles.navLogo}>
+      Devtinder
+    </StyledLink>
+    <ClientSideNav />
+  </div>
+);
 
 export default Navbar;

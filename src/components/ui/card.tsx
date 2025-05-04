@@ -22,7 +22,7 @@ const CardContent = ({
 }: {
   children: ReactNode;
   className?: string;
-}) => <div className={className}>{children}</div>;
+}) => <section className={className}>{children}</section>;
 
 const CardTitle = ({
   children,

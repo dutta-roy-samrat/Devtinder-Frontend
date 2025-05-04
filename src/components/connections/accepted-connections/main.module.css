@@ -1,0 +1,3 @@
+.connectionsContainer {
+  @apply flex items-center justify-center p-10;
+}
