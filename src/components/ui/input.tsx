@@ -7,14 +7,17 @@ import { FieldError } from "react-hook-form";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: FieldError | undefined;
+  animate?: boolean;
 }
 
 export const InputWrapper = ({
   children,
   className,
+  animate = true,
 }: {
   children: ReactNode;
   className?: string;
+  animate?: boolean;
 }) => {
   const radius = 100; // change this to increase the rdaius of the hover effect
   const [visible, setVisible] = useState(false);
@@ -29,17 +32,15 @@ export const InputWrapper = ({
     mouseY.set(clientY - top);
   }
 
+  if (!animate) return children;
+
+  const backgroundStyle = {
+    background: `radial-gradient(${visible ? radius + "px" : "0px"} circle at ${mouseX.get()}px ${mouseY.get()}px, #ef4444, transparent 80%)`
+  };
+
   return (
     <motion.div
-      style={{
-        background: useMotionTemplate`
-  radial-gradient(
-    ${visible ? radius + "px" : "0px"} circle at ${mouseX}px ${mouseY}px,
-    #ef4444,
-    transparent 80%
-  )
-`,
-      }}
+      style={backgroundStyle}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
@@ -54,9 +55,9 @@ export const InputWrapper = ({
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, error, ...props }, ref) => {
+  ({ className, type, error, animate, ...props }, ref) => {
     return (
-      <InputWrapper className={error ? "!bg-red-500" : ""}>
+      <InputWrapper className={error ? "!bg-red-500" : ""} animate={animate}>
         <input
           type={type}
           className={cn(

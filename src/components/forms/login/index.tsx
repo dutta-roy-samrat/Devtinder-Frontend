@@ -11,7 +11,7 @@ import ErrorMsg from "@components/ui/error-msg";
 
 import { LoginSchema } from "@schema-validations/login";
 
-import { DEFAULT_FORM_VALUES } from "@components/forms/registration/constants";
+import { DEFAULT_FORM_VALUES } from "@components/forms/login/constants";
 import { HOME, REGISTER } from "@constants/routes";
 
 import styles from "./main.module.css";
@@ -58,7 +58,7 @@ const LoginForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         id="login-form"
       >
-        <LabelInputContainer className={styles.emailInputContainer}>
+        <LabelInputContainer className={styles.inputContainerClass}>
           <Label htmlFor="email">Email Address</Label>
           <Input
             id="email"
@@ -69,7 +69,7 @@ const LoginForm = () => {
           />
           <ErrorMsg error={emailError} />
         </LabelInputContainer>
-        <LabelInputContainer className={styles.passwordInputContainer}>
+        <LabelInputContainer className={styles.inputContainerClass}>
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"

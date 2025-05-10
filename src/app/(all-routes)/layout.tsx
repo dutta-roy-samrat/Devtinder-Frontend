@@ -1,11 +1,12 @@
 import { ReactNode } from "react";
 
 import Navbar from "@components/navbar";
+import PageTransition from "@components/page-transition";
 
 const UnprotectedRoutesLayout = ({ children }: { children: ReactNode }) => (
   <>
     <Navbar />
-    {children}
+    <PageTransition>{children}</PageTransition>
   </>
 );
 

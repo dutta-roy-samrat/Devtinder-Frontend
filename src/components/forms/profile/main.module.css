@@ -1,3 +1,87 @@
+.fullWidth {
+  @apply w-full;
+}
+
+.flexCenter {
+  @apply flex items-center justify-center;
+}
+
+.flexCol {
+  @apply flex flex-col;
+}
+
+.roundedFull {
+  @apply rounded-full;
+}
+
 .label {
-  @apply text-white;
+  @apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+}
+
+.container {
+  @apply flexCol items-center p-8 md:h-[calc(100vh-176px)];
+}
+
+.formContainer {
+  @apply flexCol items-center rounded-3xl bg-white p-10 lg:w-auto;
+}
+
+.title {
+  @apply text-center text-2xl font-bold;
+}
+
+.form {
+  @apply flexCol items-center justify-evenly;
+}
+
+.formContent {
+  @apply m-4 flex max-w-xl flex-col-reverse items-center lg:flex-row lg:items-start lg:gap-16;
+}
+
+.inputContainer {
+  @apply flexCol gap-4;
+}
+
+.labelInputContainer {
+  @apply fullWidth;
+}
+
+.textarea {
+  @apply h-24 resize-none;
+}
+
+.avatarContainer {
+  @apply relative inline-block h-60 w-60;
+}
+
+.avatar {
+  @apply h-60 w-60;
+}
+
+.editButton {
+  @apply roundedFull absolute bottom-4 right-4 h-10 w-10 bg-white p-2 shadow-md hover:bg-gray-100;
+}
+
+.editIcon {
+  @apply h-5 w-5 text-gray-600;
+}
+
+.uploadContainer {
+  @apply flexCenter m-4 gap-3;
+}
+
+.uploadButton {
+  @apply roundedFull inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+}
+
+.uploadIcon {
+  @apply pointer-events-none size-4 shrink-0;
+}
+
+.deleteButton {
+  @apply roundedFull;
+}
+
+.submitButton {
+  @apply roundedFull w-48;
 }

@@ -1,0 +1,11 @@
+.dialogContent {
+  @apply p-0 sm:max-w-[425px];
+}
+
+.dialogHeader {
+  @apply p-6 pb-0;
+}
+
+.dialogFooter {
+  @apply gap-4 p-6 md:gap-0;
+} 

@@ -1,38 +1,73 @@
 "use client";
 
-import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { z } from "zod";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Pencil } from "lucide-react";
+
+import { IconUpload, IconTrashXFilled } from "@tabler/icons-react";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Label, LabelInputContainer } from "@components/ui/label";
 import { Input } from "@components/ui/input";
-import StyledLink from "@components/ui/styled-link";
-import ErrorMsg from "@components/ui/error-msg";
-
-import { LoginSchema } from "@schema-validations/login";
-
-import { DEFAULT_FORM_VALUES } from "@components/forms/registration/constants";
-import { HOME, REGISTER } from "@constants/routes";
-
-import styles from "./main.module.css";
 import { Avatar } from "@components/ui/avatar";
 import { Button } from "@components/ui/button";
+import ErrorMsg from "@components/ui/error-msg";
+import CustomFileUploadInput from "@components/ui/custom-file-upload-input.tsx";
+import { Textarea } from "@components/ui/textarea";
+import ImageCropperModal from "@components/ui/image-cropper/modal";
+
+import { getPercentCroppedImage } from "@helpers/image-cropper";
+
+import { ProfileSchema } from "@schema-validations/profile";
+
+import { DEFAULT_FORM_VALUES } from "@components/forms/registration/constants";
+
+import styles from "./main.module.css";
 
 const defaultObj = {};
 
 const ProfileView = () => {
-  const { register, handleSubmit, formState, getValues } = useForm<
-    z.input<typeof LoginSchema>
-  >({
-    resolver: zodResolver(LoginSchema),
-    defaultValues: DEFAULT_FORM_VALUES,
-  });
-
+  const { register, handleSubmit, formState, getValues, getFieldState } =
+    useForm<z.input<typeof ProfileSchema>>({
+      resolver: zodResolver(ProfileSchema),
+      defaultValues: DEFAULT_FORM_VALUES,
+    });
+  const [file, setFile] = useState<File | null>(null);
+  const [profileImageCropInfo, setProfileImageCropInfo] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  const [open, setOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>("");
   const { errors } = formState;
+  const {
+    firstName: firstNameError,
+    lastName: lastNameError,
+    profileImageFile: profileImageFileError,
+    bio: bioError,
+  } = errors || defaultObj;
 
-  const { email: emailError, password: passwordError } = errors || defaultObj;
+  const profileImageUrl = useMemo(() => {
+    if (file) {
+      return URL.createObjectURL(file);
+    }
+    return imageUrl;
+  }, [file, imageUrl]);
 
-  const onSubmit: SubmitHandler<z.input<typeof LoginSchema>> = (
+  const avatarRef = useRef<HTMLDivElement>(null);
+  const [avatarSize, setAvatarSize] = useState(240);
+
+  useEffect(() => {
+    if (avatarRef.current) {
+      const { width, height } = avatarRef.current.getBoundingClientRect();
+      setAvatarSize(Math.round(Math.min(width, height)));
+    }
+  }, []);
+
+  const onSubmit: SubmitHandler<z.input<typeof ProfileSchema>> = (
     data,
     e?: React.BaseSyntheticEvent,
   ) => {
@@ -40,52 +75,148 @@ const ProfileView = () => {
     console.log("Form submitted");
   };
 
+  const { onChange: onImageCropInfoChange } = register("profileImageCropInfo");
+  const { onChange: onProfileImageChange } = register("profileImageFile");
+
+  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFile(file);
+      setOpen(true);
+    }
+  };
+
+  const handleClose = () => {
+    setFile(null);
+    setOpen(false);
+    setProfileImageCropInfo(null);
+  };
+
+  const handleSave = async () => {
+    setOpen(false);
+    onProfileImageChange({ target: { name: "profileImageFile", value: file } });
+    onImageCropInfoChange({
+      target: { name: "profileImageCropInfo", value: profileImageCropInfo },
+    });
+    if (profileImageCropInfo && file) {
+      const imageSrc = URL.createObjectURL(file);
+      const cropped = await getPercentCroppedImage(
+        imageSrc,
+        profileImageCropInfo,
+        avatarSize,
+      );
+      setImageUrl(cropped);
+      URL.revokeObjectURL(imageSrc);
+      return;
+    }
+    setImageUrl(profileImageUrl);
+  };
+
   return (
-    <div className="p-16 flex h-[calc(100vh-96px)] flex-col items-center justify-start md:h-[calc(100vh-176px)] overflow-auto">
-      <div className="m-8 text-2xl font-bold text-white">Profile Settings</div>
-      <form className="flex flex-col items-center justify-evenly">
-        <div className="m-4 flex flex-col-reverse items-center justify-center md:flex-row md:items-start md:gap-16">
-          <div>
-            <LabelInputContainer>
-              <Label htmlFor="email" className={styles.label}>
-                Email Address
-              </Label>
-              <Input
-                id="email"
-                placeholder="johndoe@mail.com"
-                type="email"
-                {...register("email")}
-                error={emailError}
-              />
-              <ErrorMsg error={emailError} />
-            </LabelInputContainer>
-            <LabelInputContainer className={styles.passwordInputContainer}>
-              <Label htmlFor="password" className={styles.label}>
-                Password
-              </Label>
-              <Input
-                id="password"
-                placeholder="••••••••"
-                type="password"
-                {...register("password")}
-                error={passwordError}
-              />
-              <ErrorMsg error={passwordError} />
-            </LabelInputContainer>
-          </div>
-          <div>
-            <Avatar className="h-56 w-56" />
-            <div className="m-4 flex flex-col gap-3">
-              <Button className="rounded-full">Change</Button>
-              <Button className="rounded-full">Remove</Button>
+    <>
+      <div className={styles.container}>
+        <div className={styles.formContainer}>
+          <div className={styles.title}>Profile Settings</div>
+          <form className={styles.form}>
+            <div className={styles.formContent}>
+              <div className={styles.inputContainer}>
+                <LabelInputContainer className={styles.labelInputContainer}>
+                  <Label htmlFor="firstName" className={styles.label}>
+                    First Name
+                  </Label>
+                  <Input
+                    id="firstName"
+                    placeholder="John"
+                    type="text"
+                    {...register("firstName")}
+                    error={firstNameError}
+                  />
+                  <ErrorMsg error={firstNameError} />
+                </LabelInputContainer>
+                <LabelInputContainer className={styles.labelInputContainer}>
+                  <Label htmlFor="lastName" className={styles.label}>
+                    Last Name
+                  </Label>
+                  <Input
+                    id="lastName"
+                    placeholder="Doe"
+                    type="text"
+                    {...register("lastName")}
+                    error={lastNameError}
+                  />
+                  <ErrorMsg error={lastNameError} />
+                </LabelInputContainer>
+                <LabelInputContainer className={styles.labelInputContainer}>
+                  <Label htmlFor="bio" className={styles.label}>
+                    Bio
+                  </Label>
+                  <Textarea
+                    id="bio"
+                    placeholder="Doe"
+                    {...register("bio")}
+                    error={bioError}
+                    className={styles.textarea}
+                  />
+                  <ErrorMsg error={bioError} />
+                </LabelInputContainer>
+              </div>
+              <div>
+                <div ref={avatarRef} className={styles.avatarContainer}>
+                  <Avatar
+                    className={styles.avatar}
+                    src={imageUrl}
+                    initials="JD"
+                  />
+                  <Button
+                    className={styles.editButton}
+                    onClick={(e) => {
+                      e?.preventDefault();
+                    }}
+                  >
+                    <Pencil className={styles.editIcon} />
+                  </Button>
+                </div>
+                <ErrorMsg error={profileImageFileError} />
+                <div className={styles.uploadContainer}>
+                  <CustomFileUploadInput
+                    animate={false}
+                    onChange={handleProfileImageChange}
+                    setFile={setFile}
+                    file={file}
+                    accept="image/jpeg,image/png,image/webp"
+                  >
+                    <div className={styles.uploadButton}>
+                      <IconUpload className={styles.uploadIcon} />
+                    </div>
+                  </CustomFileUploadInput>
+                  <Button
+                    className={styles.deleteButton}
+                    onClick={(e) => {
+                      e?.preventDefault();
+                      setImageUrl("");
+                      setFile(null);
+                    }}
+                    variant="ghost"
+                  >
+                    <IconTrashXFilled />
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
+            <Button type="submit" className={styles.submitButton}>
+              Save
+            </Button>
+          </form>
         </div>
-        <Button type="submit" className="w-48 rounded-full">
-          Save
-        </Button>
-      </form>
-    </div>
+      </div>
+      <ImageCropperModal
+        open={open}
+        onClose={handleClose}
+        onSave={handleSave}
+        image={profileImageUrl}
+        onImageInfoChange={setProfileImageCropInfo}
+      />
+    </>
   );
 };
 

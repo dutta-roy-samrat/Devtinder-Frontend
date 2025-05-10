@@ -1,0 +1,19 @@
+.container {
+  @apply relative mx-auto bg-black;
+}
+
+.cropperContainer {
+  @apply w-full h-full bg-black;
+}
+
+.cropArea {
+  @apply border-2 border-white;
+}
+
+.zoomInputContainer {
+  @apply flex flex-col items-center justify-center gap-2;
+}
+
+.zoomRange {
+  @apply !border-none shadow-none !outline-none;
+} 

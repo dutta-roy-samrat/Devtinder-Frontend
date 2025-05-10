@@ -30,15 +30,8 @@
   @apply mb-4 flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0;
 }
 
-.emailInputContainer,
-.passwordInputContainer,
-.dateOfBirthInputContainer,
-.genderInputContainer {
+.inputContainerClass {
   @apply mb-4;
-}
-
-.inputClass {
-  @apply flex h-10 w-full animate-[400ms] rounded-md border-none bg-gray-50 px-3 py-2 text-sm shadow-input transition-[400ms] file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-[2px] focus-visible:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50 group-hover/input:shadow-none dark:bg-zinc-800 dark:text-white dark:placeholder-neutral-600 dark:shadow-[0px_0px_1px_1px_#404040] dark:focus-visible:ring-neutral-600;
 }
 
 .submitButton {

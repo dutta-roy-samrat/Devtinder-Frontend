@@ -1,3 +1,7 @@
 .formContainer {
   @apply flex min-h-screen flex-col items-center justify-center bg-white md:bg-transparent;
 }
+
+.pageTransition {
+  @apply flex w-full items-center justify-center;
+}
