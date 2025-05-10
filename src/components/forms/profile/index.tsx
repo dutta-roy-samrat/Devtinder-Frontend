@@ -17,7 +17,7 @@ import CustomFileUploadInput from "@components/ui/custom-file-upload-input.tsx";
 import { Textarea } from "@components/ui/textarea";
 import ImageCropperModal from "@components/ui/image-cropper/modal";
 
-import { getPercentCroppedImage } from "@helpers/image-cropper";
+import { getCroppedImage } from "@helpers/image-cropper";
 
 import { ProfileSchema } from "@schema-validations/profile";
 
@@ -58,14 +58,6 @@ const ProfileView = () => {
   }, [file, imageUrl]);
 
   const avatarRef = useRef<HTMLDivElement>(null);
-  const [avatarSize, setAvatarSize] = useState(240);
-
-  useEffect(() => {
-    if (avatarRef.current) {
-      const { width, height } = avatarRef.current.getBoundingClientRect();
-      setAvatarSize(Math.round(Math.min(width, height)));
-    }
-  }, []);
 
   const onSubmit: SubmitHandler<z.input<typeof ProfileSchema>> = (
     data,
@@ -100,7 +92,12 @@ const ProfileView = () => {
     });
     if (profileImageCropInfo && file) {
       const imageSrc = URL.createObjectURL(file);
-      const cropped = await getPercentCroppedImage(
+      let avatarSize = 240;
+      if (avatarRef.current) {
+        const { width, height } = avatarRef.current.getBoundingClientRect();
+        avatarSize = Math.round(Math.min(width, height));
+      }
+      const cropped = await getCroppedImage(
         imageSrc,
         profileImageCropInfo,
         avatarSize,
@@ -161,11 +158,12 @@ const ProfileView = () => {
                 </LabelInputContainer>
               </div>
               <div>
-                <div ref={avatarRef} className={styles.avatarContainer}>
+                <div className={styles.avatarContainer}>
                   <Avatar
                     className={styles.avatar}
                     src={imageUrl}
                     initials="JD"
+                    ref={avatarRef}
                   />
                   <Button
                     className={styles.editButton}

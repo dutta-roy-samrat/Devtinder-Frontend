@@ -1,6 +1,6 @@
 export type CropArea = { x: number; y: number; width: number; height: number };
 
-export const getPercentCroppedImage = async (
+export const getCroppedImage = async (
   image: string,
   croppedArea: CropArea,
   outputSize: number = 240,
@@ -21,10 +21,10 @@ export const getPercentCroppedImage = async (
   }
 
   const cropPx = {
-    x: Math.round((croppedArea.x / 100) * img.naturalWidth),
-    y: Math.round((croppedArea.y / 100) * img.naturalHeight),
-    width: Math.round((croppedArea.width / 100) * img.naturalWidth),
-    height: Math.round((croppedArea.height / 100) * img.naturalHeight),
+    x: Math.floor((croppedArea.x / 100) * img.naturalWidth),
+    y: Math.floor((croppedArea.y / 100) * img.naturalHeight),
+    width: Math.floor((croppedArea.width / 100) * img.naturalWidth),
+    height: Math.floor((croppedArea.height / 100) * img.naturalHeight),
   };
 
   canvas.width = outputSize;

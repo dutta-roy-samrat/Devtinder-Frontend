@@ -71,7 +71,7 @@
 }
 
 .uploadButton {
-  @apply roundedFull inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+  @apply rounded-xl inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow-md;
 }
 
 .uploadIcon {
@@ -79,7 +79,7 @@
 }
 
 .deleteButton {
-  @apply roundedFull;
+  @apply rounded-xl shadow-md;
 }
 
 .submitButton {

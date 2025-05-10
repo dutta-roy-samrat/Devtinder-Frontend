@@ -3,7 +3,7 @@
 }
 
 .cropperContainer {
-  @apply w-full h-full bg-black;
+  @apply h-full w-full bg-black;
 }
 
 .cropArea {
@@ -15,5 +15,5 @@
 }
 
 .zoomRange {
-  @apply !border-none shadow-none !outline-none;
+  @apply p-0 shadow-none;
 }

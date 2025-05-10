@@ -48,21 +48,21 @@ const AvatarFallback = forwardRef<
 ));
 AvatarFallback.displayName = Fallback.displayName;
 
-const Avatar = ({
-  className = "",
-  src,
-  initials,
-}: {
-  className?: string;
-  src: string;
-  initials: string;
-}) => {
-  return (
-    <AvatarContainer className={cn("bg-red-500", className)}>
-      <AvatarImage src={src} />
-      <AvatarFallback className="bg-slate-400">{initials}</AvatarFallback>
-    </AvatarContainer>
-  );
-};
+type AvatarProps = {
+  src?: string;
+  initials?: string;
+} & ComponentPropsWithoutRef<typeof AvatarContainer>;
+
+const Avatar = forwardRef<ElementRef<typeof AvatarContainer>, AvatarProps>(
+  ({ className = "", src, initials, ...props }, ref) => {
+    return (
+      <AvatarContainer ref={ref} className={cn("bg-red-500", className)} {...props}>
+        <AvatarImage src={src} />
+        <AvatarFallback className="bg-slate-400">{initials}</AvatarFallback>
+      </AvatarContainer>
+    );
+  }
+);
+Avatar.displayName = AvatarContainer.displayName;
 
 export { Avatar, AvatarImage, AvatarFallback };

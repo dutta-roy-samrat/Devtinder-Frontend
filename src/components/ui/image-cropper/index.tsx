@@ -38,6 +38,13 @@ const ImageCropper = ({
     onImageInfoChange(croppedArea);
   }, []);
 
+  const handleZoomChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setZoom(Number(e.target.value));
+    },
+    [],
+  );
+
   console.log(image);
 
   return (
@@ -67,6 +74,7 @@ const ImageCropper = ({
               ),
               cropAreaClassName: cn(styles.cropArea, cropAreaClassName),
             }}
+            maxZoom={8}
           />
         )}
       </div>
@@ -77,10 +85,10 @@ const ImageCropper = ({
           type="range"
           id="zoom"
           min={1}
-          max={3}
+          max={8}
           step={0.1}
           value={zoom}
-          onChange={(e) => setZoom(Number(e.target.value))}
+          onChange={handleZoomChange}
           className={cn(styles.zoomRange, zoomRangeClassName)}
           style={{ width: `${width}px` }}
           animate={false}
