@@ -19,7 +19,7 @@
 }
 
 .container {
-  @apply flexCol items-center p-8 md:h-[calc(100vh-176px)];
+  @apply flexCenter items-center p-8 md:h-[calc(100vh-176px)] flex-col;
 }
 
 .formContainer {
@@ -55,7 +55,7 @@
 }
 
 .avatar {
-  @apply h-60 w-60;
+  @apply h-60 w-60 shadow-xl;
 }
 
 .editButton {

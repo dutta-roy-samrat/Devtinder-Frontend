@@ -58,7 +58,7 @@ const Avatar = ({
   initials: string;
 }) => {
   return (
-    <AvatarContainer className={className}>
+    <AvatarContainer className={cn("bg-red-500", className)}>
       <AvatarImage src={src} />
       <AvatarFallback className="bg-slate-400">{initials}</AvatarFallback>
     </AvatarContainer>

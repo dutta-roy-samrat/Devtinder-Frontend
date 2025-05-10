@@ -38,14 +38,13 @@ const ImageCropper = ({
     onImageInfoChange(croppedArea);
   }, []);
 
+  console.log(image);
+
   return (
     <>
       <div
-        className={cn(
-          styles.container,
-          `h-[${height}px] w-[${width}px]`,
-          containerClassName,
-        )}
+        className={cn(styles.container, containerClassName)}
+        style={{ height: `${height}px`, width: `${width}px` }}
       >
         {image && (
           <Cropper
@@ -72,10 +71,7 @@ const ImageCropper = ({
         )}
       </div>
       <div
-        className={cn(
-          styles.zoomInputContainer,
-          zoomInputContainerClassName,
-        )}
+        className={cn(styles.zoomInputContainer, zoomInputContainerClassName)}
       >
         <Input
           type="range"
@@ -85,11 +81,8 @@ const ImageCropper = ({
           step={0.1}
           value={zoom}
           onChange={(e) => setZoom(Number(e.target.value))}
-          className={cn(
-            styles.zoomRange,
-            `w-[${width}px]`,
-            zoomRangeClassName,
-          )}
+          className={cn(styles.zoomRange, zoomRangeClassName)}
+          style={{ width: `${width}px` }}
           animate={false}
         />
       </div>
