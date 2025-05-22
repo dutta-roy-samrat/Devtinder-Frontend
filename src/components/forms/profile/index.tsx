@@ -17,22 +17,54 @@ import CustomFileUploadInput from "@components/ui/custom-file-upload-input.tsx";
 import { Textarea } from "@components/ui/textarea";
 import ImageCropperModal from "@components/ui/image-cropper/modal";
 
+import { useAuthContext } from "@contexts/auth";
+
 import { getCroppedImage } from "@helpers/image-cropper";
 
 import { ProfileSchema } from "@schema-validations/profile";
 
-import { DEFAULT_FORM_VALUES } from "@components/forms/registration/constants";
+import { DEFAULT_FORM_VALUES } from "@components/forms/profile/constants";
 
 import styles from "./main.module.css";
 
-const defaultObj = {};
+const defaultObj: { [key: string]: any } = {};
 
 const ProfileView = () => {
-  const { register, handleSubmit, formState, getValues, getFieldState } =
+  const userProfile = useAuthContext();
+  const {
+    profile,
+    firstName: currentFirstName,
+    lastName: currentLastName,
+  } = userProfile || defaultObj;
+
+  const {
+    profileImageFile: currentProfileImageFile,
+    profileImageCropInfo: currentProfileImageCropInfo,
+    bio: currentBio,
+  } = profile || defaultObj;
+
+  const defaultValues = useMemo(() => {
+    return {
+      firstName: currentFirstName,
+      lastName: currentLastName,
+      profileImageFile: currentProfileImageFile,
+      profileImageCropInfo: currentProfileImageCropInfo,
+      bio: currentBio,
+    };
+  }, [
+    currentFirstName,
+    currentLastName,
+    currentProfileImageFile,
+    currentProfileImageCropInfo,
+    currentBio,
+  ]);
+
+  const { register, handleSubmit, formState, getValues, getFieldState , watch} =
     useForm<z.input<typeof ProfileSchema>>({
       resolver: zodResolver(ProfileSchema),
-      defaultValues: DEFAULT_FORM_VALUES,
+      defaultValues,
     });
+
   const [file, setFile] = useState<File | null>(null);
   const [profileImageCropInfo, setProfileImageCropInfo] = useState<{
     x: number;
@@ -42,6 +74,9 @@ const ProfileView = () => {
   } | null>(null);
   const [open, setOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
+
+  const firstInitial = watch("firstName")?.[0]||"";
+  const lastInitial = watch("lastName")?.[0]||"";
   const { errors } = formState;
   const {
     firstName: firstNameError,
@@ -162,7 +197,7 @@ const ProfileView = () => {
                   <Avatar
                     className={styles.avatar}
                     src={imageUrl}
-                    initials="JD"
+                    initials={firstInitial + lastInitial}
                     ref={avatarRef}
                   />
                   <Button

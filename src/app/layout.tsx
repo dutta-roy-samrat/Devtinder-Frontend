@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ToastContainer } from "react-toastify";
 
 import DeviceProvider from "@contexts/device";
+import TanstackClientProvider from "@services/tanstack/client";
 
 import "./globals.css";
 import styles from "./main.module.css";
@@ -21,9 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <DeviceProvider>
-          <div className={styles.main}>{children}</div>
-        </DeviceProvider>
+      <ToastContainer />
+        <TanstackClientProvider>
+            <DeviceProvider>
+              <div className={styles.main}>{children}</div>
+            </DeviceProvider>
+        </TanstackClientProvider>
       </body>
     </html>
   );

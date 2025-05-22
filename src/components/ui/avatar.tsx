@@ -51,17 +51,28 @@ AvatarFallback.displayName = Fallback.displayName;
 type AvatarProps = {
   src?: string;
   initials?: string;
+  loading?: boolean;
 } & ComponentPropsWithoutRef<typeof AvatarContainer>;
 
 const Avatar = forwardRef<ElementRef<typeof AvatarContainer>, AvatarProps>(
-  ({ className = "", src, initials, ...props }, ref) => {
+  ({ className = "", src, initials, loading, ...props }, ref) => {
     return (
-      <AvatarContainer ref={ref} className={cn("bg-red-500", className)} {...props}>
+      <AvatarContainer
+        ref={ref}
+        className={cn("bg-red-500", className)}
+        {...props}
+      >
         <AvatarImage src={src} />
-        <AvatarFallback className="bg-slate-400">{initials}</AvatarFallback>
+        {
+          <AvatarFallback
+            className={loading ? "animate-pulse" : "bg-slate-400"}
+          >
+            {initials || ""}
+          </AvatarFallback>
+        }
       </AvatarContainer>
     );
-  }
+  },
 );
 Avatar.displayName = AvatarContainer.displayName;
 

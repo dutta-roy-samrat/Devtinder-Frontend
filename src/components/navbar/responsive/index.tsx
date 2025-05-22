@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Drawer,
   DrawerClose,
@@ -9,14 +7,12 @@ import {
   DrawerTrigger,
 } from "@components/ui/drawer";
 import { Button } from "@components/ui/button";
-import ResponsiveLoggedInNav from "@components/navbar/responsive/logged-in";
+import LogoutButton from "@components/shared/logout-button";
+import NavLinks from "@components/nav-links";
 
 import styles from "./main.module.css";
-import StyledLink from "@components/ui/styled-link";
-import { LOGIN, LOGOUT } from "@constants/routes";
 
 const ResponsiveNav = () => {
-  const isLoggedIn = false; // Replace with actual authentication check
   const renderHamburger = () => (
     <div className={styles.hamburgerContainer}>
       {Array(3)
@@ -36,15 +32,12 @@ const ResponsiveNav = () => {
           Navigation menu
         </DrawerTitle>
         <div className={styles.drawerContent}>
-          <ResponsiveLoggedInNav />
+          <div className={styles.responsiveNavContainer}>
+            <NavLinks as={DrawerClose} />
+          </div>
           <DrawerFooter>
             <DrawerClose asChild>
-              <StyledLink
-                href={isLoggedIn ? LOGOUT.url : LOGIN.url}
-                className={styles.drawerClose}
-              >
-                {isLoggedIn ? LOGOUT.name : LOGIN.name}
-              </StyledLink>
+              <LogoutButton className={styles.drawerClose} />
             </DrawerClose>
             <DrawerClose asChild>
               <Button className={styles.drawerClose}>Close</Button>

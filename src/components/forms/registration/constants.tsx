@@ -1,8 +1,10 @@
+import { Gender } from "types/user";
+
 export const DEFAULT_FORM_VALUES = {
   firstName: "",
   lastName: "",
-  gender: "",
-  dateOfBirth: "",
+  gender: undefined as Gender | undefined,
+  dateOfBirth: undefined as Date | undefined,
   password: "",
   email: "",
 };

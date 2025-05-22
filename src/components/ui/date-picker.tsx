@@ -12,33 +12,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@components/ui/popover";
-
 interface DatePickerProps {
-  value?: Date;
+  value?: string;
   onChange?: (event: { target: { name?: string; value: string } }) => void;
   className?: string;
   name?: string;
   required?: boolean;
 }
 
-const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
-  (
-    { className, value, onChange = () => {}, name, required, ...props },
-    ref,
-  ) => {
-    const [date, setDate] = useState<Date | undefined>(value);
+const today = new Date();
 
-    useEffect(() => {
-      setDate(value);
-    }, [value]);
+const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
+  ({ className, onChange = () => {}, name, required, ...props }, ref) => {
+    const [date, setDate] = useState<Date | undefined>();
 
     const handleSelect = (selectedDate: Date | undefined) => {
       setDate(selectedDate);
-      // Create a synthetic event that React Hook Form expects
       onChange({
         target: {
           name: name,
-          value: selectedDate ? format(selectedDate, "dd/LL/yyyy") : "",
+          value: selectedDate ? selectedDate.toISOString() : "",
         },
       });
     };
@@ -73,6 +66,9 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
               selected={date}
               onSelect={handleSelect}
               initialFocus
+              captionLayout="dropdown-buttons"
+              fromYear={1900}
+              toYear={today.getFullYear()}
             />
           </PopoverContent>
         </Popover>

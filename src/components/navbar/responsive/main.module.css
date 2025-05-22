@@ -21,3 +21,7 @@
 .drawerClose {
   @apply inline-flex h-0 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white py-5 text-center text-sm font-medium text-black shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
 }
+
+.responsiveNavContainer {
+  @apply flex flex-col gap-2;
+}

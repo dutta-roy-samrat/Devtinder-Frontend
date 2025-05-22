@@ -17,7 +17,7 @@ const ProfileSchema = z.object({
       height: z.number(),
     })
     .optional(),
-  profileImageFile: z.instanceof(File).optional(),
+  profileImageFile: z.instanceof(File).nullable().optional(),
   bio: z
     .string()
     .trim()

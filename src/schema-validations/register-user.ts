@@ -1,12 +1,7 @@
 import { z } from "zod";
 import validator from "validator";
 
-import { ProfileSchema } from "@schema-validations/profile";
-import { SkillSchema } from "@schema-validations/skill";
-
-import { Gender } from "types/user";
-
-const UserSchema = z.object({
+const RegisterUserSchema = z.object({
   firstName: z
     .string()
     .trim()
@@ -40,17 +35,34 @@ const UserSchema = z.object({
       if (typeof val === "string" && val.trim() === "") return undefined;
       return val;
     },
-    z.coerce.date({ invalid_type_error: "Invalid date" }),
+    z.coerce.date({ invalid_type_error: "Invalid date" }).refine(
+      (val) => {
+        const today = new Date();
+        const birthDate = new Date(val);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < birthDate.getDate())
+        ) {
+          return age - 1 >= 18;
+        }
+
+        return age >= 18;
+      },
+      {
+        message: "Must be at least 18 years old",
+      },
+    ),
   ),
   gender: z.preprocess(
     (val) => {
       if (typeof val === "string" && val.trim() === "") return undefined;
-      return Gender[val as keyof typeof Gender];
+      return val;
     },
-    z.nativeEnum(Gender, { message: "Invalid gender" }),
+    z.enum(["MALE", "FEMALE", "OTHER"], { message: "Invalid gender" }),
   ),
-  profile: ProfileSchema.optional(),
-  skills: z.array(SkillSchema).optional(),
 });
 
-export { UserSchema };
+export { RegisterUserSchema };

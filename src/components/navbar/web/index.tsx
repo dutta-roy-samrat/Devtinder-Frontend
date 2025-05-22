@@ -1,17 +1,34 @@
-"use client";
+import NavLinks from "@components/nav-links";
+import NavbarAvatar from "@components/navbar/avatar";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@components/ui/navigation-menu";
+import LogoutButton from "@components/shared/logout-button";
 
-import LoggedInNav from "@components/navbar/web/logged-in";
-import LoggedOutNav from "@components/nav-links/logged-out";
+import styles from "./main.module.css";
 
-const WebNavBar = () => {
-  const isLoggedIn = false; // Replace with actual authentication logic
-  return true ? (
-    <LoggedInNav />
-  ) : (
-    <div className="flex gap-2">
-      <LoggedOutNav />
+const WebNavBar  = () => (
+  <>
+    <div className={styles.navLinksContainer}>
+      <NavLinks />
     </div>
-  );
-};
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className={styles.avatarDropdown}>
+            <NavbarAvatar className={styles.avatar} />
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className={styles.avatarDropdownContent}>
+            <LogoutButton />
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  </>
+);
 
 export default WebNavBar;

@@ -26,7 +26,9 @@
       "@helpers/*": ["helpers/*"],
       "@contexts/*": ["contexts/*"],
       "@schema-validations/*": ["schema-validations/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@services/*": ["services/*"],
+      "@apis/*": ["apis/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

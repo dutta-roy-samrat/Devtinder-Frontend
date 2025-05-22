@@ -19,24 +19,40 @@ import {
 } from "@components/ui/select";
 import ErrorMsg from "@components/ui/error-msg";
 
-import { UserSchema } from "@schema-validations/user";
+import { RegisterUserSchema } from "@schema-validations/register-user";
 
 import {
   DEFAULT_FORM_VALUES,
   GENDER_OPTIONS,
 } from "@components/forms/registration/constants";
-import { HOME, LOGIN } from "@constants/routes";
+import { FEED, HOME, LOGIN } from "@constants/routes";
 
 import styles from "./main.module.css";
+import { useMutation } from "@tanstack/react-query";
+import { registerUserApi } from "@apis/auth";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const defaultObj = {};
 
 const RegistrationForm = () => {
-  const { register, handleSubmit, formState, getValues } = useForm<
-    z.input<typeof UserSchema>
+  const router = useRouter();
+  const { register, handleSubmit, formState } = useForm<
+    z.input<typeof RegisterUserSchema>
   >({
-    resolver: zodResolver(UserSchema),
+    resolver: zodResolver(RegisterUserSchema),
     defaultValues: DEFAULT_FORM_VALUES,
+  });
+
+  const { mutate: registerUser } = useMutation({
+    mutationFn: registerUserApi,
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      router.push(FEED.url);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
   });
 
   const { errors } = formState;
@@ -50,16 +66,14 @@ const RegistrationForm = () => {
     gender: genderError,
   } = errors || defaultObj;
 
-  const onSubmit: SubmitHandler<z.input<typeof UserSchema>> = (
+  const onSubmit: SubmitHandler<z.input<typeof RegisterUserSchema>> = (
     data,
     e?: React.BaseSyntheticEvent,
   ) => {
+    console.log(data);
     e?.preventDefault();
-    console.log("Form submitted");
+    registerUser(data as z.output<typeof RegisterUserSchema>);
   };
-
-  console.log(getValues("gender"));
-
   const {
     onChange: onGenderChange,
     ref: genderRef,

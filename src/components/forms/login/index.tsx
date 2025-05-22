@@ -3,30 +3,48 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 import { Label, LabelInputContainer } from "@components/ui/label";
 import { Input } from "@components/ui/input";
 import StyledLink from "@components/ui/styled-link";
 import ErrorMsg from "@components/ui/error-msg";
 
+import { loginApi } from "@apis/auth";
+
 import { LoginSchema } from "@schema-validations/login";
 
 import { DEFAULT_FORM_VALUES } from "@components/forms/login/constants";
-import { HOME, REGISTER } from "@constants/routes";
+import { FEED, HOME, REGISTER } from "@constants/routes";
 
 import styles from "./main.module.css";
+import { Button } from "@components/ui/button";
 
 const defaultObj = {};
 
 const LoginForm = () => {
-  const { register, handleSubmit, formState, getValues } = useForm<
+  const router = useRouter();
+  const { mutate: login } = useMutation({
+    mutationFn: loginApi,
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      router.push(FEED.url);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+
+  const { register, handleSubmit, formState } = useForm<
     z.input<typeof LoginSchema>
   >({
     resolver: zodResolver(LoginSchema),
     defaultValues: DEFAULT_FORM_VALUES,
   });
 
-  const { errors } = formState;
+  const { errors, isSubmitting } = formState;
 
   const { email: emailError, password: passwordError } = errors || defaultObj;
 
@@ -35,7 +53,7 @@ const LoginForm = () => {
     e?: React.BaseSyntheticEvent,
   ) => {
     e?.preventDefault();
-    console.log("Form submitted");
+    login(data);
   };
 
   return (
@@ -80,13 +98,18 @@ const LoginForm = () => {
           />
           <ErrorMsg error={passwordError} />
         </LabelInputContainer>
-        <button className={styles.submitButton} type="submit">
+        <Button
+          className={styles.submitButton}
+          type="submit"
+          disabled={isSubmitting}
+          isLoading={isSubmitting}
+        >
           Login &rarr;
-        </button>
+        </Button>
         <div className={styles.divider} />
         <StyledLink
           href="/reset-password"
-          className="flex items-center justify-center text-sm font-semibold hover:underline mt-5"
+          className="mt-5 flex items-center justify-center text-sm font-semibold hover:underline"
         >
           Forgot Your Password?
         </StyledLink>
