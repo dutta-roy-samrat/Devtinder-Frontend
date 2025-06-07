@@ -85,3 +85,8 @@
 .submitButton {
   @apply roundedFull w-48;
 }
+
+.loader {
+  @apply animate-spin;
+}
+

@@ -59,16 +59,22 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       renderLoader = defaultLoader,
       loaderClassName = "",
       numOfLoaders = 3,
+      children,
       ...rest
     } = props;
-    return isLoading ? (
-      renderLoader({ className: loaderClassName, numOfLoaders: numOfLoaders })
-    ) : (
+    return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...rest}
-      />
+      >
+        {isLoading
+          ? renderLoader({
+              className: loaderClassName,
+              numOfLoaders: numOfLoaders,
+            })
+          : children}
+      </Comp>
     );
   },
 );

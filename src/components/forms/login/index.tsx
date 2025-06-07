@@ -44,7 +44,7 @@ const LoginForm = () => {
     defaultValues: DEFAULT_FORM_VALUES,
   });
 
-  const { errors, isSubmitting } = formState;
+  const { errors, isSubmitSuccessful } = formState;
 
   const { email: emailError, password: passwordError } = errors || defaultObj;
 
@@ -101,8 +101,10 @@ const LoginForm = () => {
         <Button
           className={styles.submitButton}
           type="submit"
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
+          disabled={isSubmitSuccessful}
+          isLoading={isSubmitSuccessful}
+          loaderClassName={styles.loaderClassName}
+          numOfLoaders={5}
         >
           Login &rarr;
         </Button>

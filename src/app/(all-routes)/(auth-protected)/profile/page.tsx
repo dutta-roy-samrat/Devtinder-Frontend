@@ -1,6 +1,5 @@
+import ProfileSettings from "@components/forms/profile";
 
-import ProfileView from "@components/forms/profile";
-
-const ProfilePage = () => <ProfileView />;
+const ProfilePage = () => <ProfileSettings />;
 
 export default ProfilePage;

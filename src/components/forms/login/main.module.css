@@ -43,3 +43,7 @@
 .errorInput {
   @apply !bg-red-500;
 }
+
+.loaderClassName {
+  @apply h-3 w-3;
+}

@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo, useState, useRef, useCallback, useEffect } from "react";
 import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Pencil } from "lucide-react";
-
 import { IconUpload, IconTrashXFilled } from "@tabler/icons-react";
+import { Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 
 import { Label, LabelInputContainer } from "@components/ui/label";
 import { Input } from "@components/ui/input";
@@ -16,241 +17,319 @@ import ErrorMsg from "@components/ui/error-msg";
 import CustomFileUploadInput from "@components/ui/custom-file-upload-input.tsx";
 import { Textarea } from "@components/ui/textarea";
 import ImageCropperModal from "@components/ui/image-cropper/modal";
-
 import { useAuthContext } from "@contexts/auth";
-
-import { getCroppedImage } from "@helpers/image-cropper";
-
 import { ProfileSchema } from "@schema-validations/profile";
-
-import { DEFAULT_FORM_VALUES } from "@components/forms/profile/constants";
+import { updateProfileApi } from "@apis/profile";
+import { getAllDirtyFields } from "@helpers/form";
+import { AvatarImageCropInfo } from "@components/ui/avatar-editor";
 
 import styles from "./main.module.css";
 
-const defaultObj: { [key: string]: any } = {};
+type FormValues = z.input<typeof ProfileSchema>;
 
 const ProfileView = () => {
+  const { mutate: updateProfile } = useMutation({
+    mutationFn: updateProfileApi,
+  });
   const userProfile = useAuthContext();
+
   const {
     profile,
     firstName: currentFirstName,
     lastName: currentLastName,
-  } = userProfile || defaultObj;
+  } = userProfile;
 
   const {
-    profileImageFile: currentProfileImageFile,
     profileImageCropInfo: currentProfileImageCropInfo,
     bio: currentBio,
-  } = profile || defaultObj;
+    croppedProfileImageUrl: currentImageUrl,
+    originalProfileImageUrl: currentOriginalImageUrl,
+  } = profile;
 
-  const defaultValues = useMemo(() => {
-    return {
+  const [isBtnDisabled, setIsBtnDisabled] = useState(true);
+
+  const defaultValues = useMemo<FormValues>(
+    () => ({
       firstName: currentFirstName,
       lastName: currentLastName,
-      profileImageFile: currentProfileImageFile,
+      originalProfileImageFile: null,
       profileImageCropInfo: currentProfileImageCropInfo,
+      croppedProfileImageBlob: null,
       bio: currentBio,
-    };
-  }, [
-    currentFirstName,
-    currentLastName,
-    currentProfileImageFile,
-    currentProfileImageCropInfo,
-    currentBio,
-  ]);
+    }),
+    [
+      currentFirstName,
+      currentLastName,
+      currentProfileImageCropInfo,
+      currentBio,
+    ],
+  );
 
-  const { register, handleSubmit, formState, getValues, getFieldState , watch} =
-    useForm<z.input<typeof ProfileSchema>>({
-      resolver: zodResolver(ProfileSchema),
-      defaultValues,
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    getValues,
+    setValue,
+  } = useForm<FormValues>({
+    resolver: zodResolver(ProfileSchema),
+    defaultValues,
+  });
 
   const [file, setFile] = useState<File | null>(null);
-  const [profileImageCropInfo, setProfileImageCropInfo] = useState<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  } | null>(null);
   const [open, setOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>("");
-
-  const firstInitial = watch("firstName")?.[0]||"";
-  const lastInitial = watch("lastName")?.[0]||"";
-  const { errors } = formState;
-  const {
-    firstName: firstNameError,
-    lastName: lastNameError,
-    profileImageFile: profileImageFileError,
-    bio: bioError,
-  } = errors || defaultObj;
-
-  const profileImageUrl = useMemo(() => {
-    if (file) {
-      return URL.createObjectURL(file);
-    }
-    return imageUrl;
-  }, [file, imageUrl]);
+  const [imageUrl, setImageUrl] = useState(currentImageUrl || "");
+  const [isEditing, setIsEditing] = useState(false);
 
   const avatarRef = useRef<HTMLDivElement>(null);
 
-  const onSubmit: SubmitHandler<z.input<typeof ProfileSchema>> = (
-    data,
-    e?: React.BaseSyntheticEvent,
-  ) => {
-    e?.preventDefault();
-    console.log("Form submitted");
-  };
+  const firstName = watch("firstName");
+  const lastName = watch("lastName");
 
-  const { onChange: onImageCropInfoChange } = register("profileImageCropInfo");
-  const { onChange: onProfileImageChange } = register("profileImageFile");
+  const initials = useMemo(() => {
+    const firstInitial = firstName?.trim()?.[0]?.toUpperCase() || "";
+    const lastInitial = lastName?.trim()?.[0]?.toUpperCase() || "";
+    return firstInitial + lastInitial;
+  }, [firstName, lastName]);
 
-  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(file);
-      setOpen(true);
+  const profileImageUrl = useMemo(
+    () => (file ? URL.createObjectURL(file) : currentOriginalImageUrl),
+    [file, currentOriginalImageUrl],
+  );
+  const formData = watch();
+
+  useEffect(() => {
+    const dirtyFields = getAllDirtyFields({ data: formData, defaultValues });
+    if (
+      Object.keys(dirtyFields).length !== 0 ||
+      !(imageUrl && currentImageUrl)
+    ) {
+      return setIsBtnDisabled(false);
     }
-  };
+    return setIsBtnDisabled(true);
+  }, [defaultValues, currentImageUrl, imageUrl, formData]);
 
-  const handleClose = () => {
-    setFile(null);
-    setOpen(false);
-    setProfileImageCropInfo(null);
-  };
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    (data, e) => {
+      e?.preventDefault();
+      const formData = new FormData();
+      const dirtyFields = getAllDirtyFields({ data, defaultValues });
+      Object.entries(dirtyFields).forEach(([key, value]) => {
+        if (key === "profileImageCropInfo") {
+          formData.append(key, JSON.stringify(value));
+          return;
+        }
+        if (value instanceof Blob) {
+          formData.append(
+            key,
+            value,
+            `${getValues("originalProfileImageFile")?.name || currentOriginalImageUrl.split("original/")[1]}`,
+          );
+          return;
+        }
+        formData.append(key, value as string);
+      });
 
-  const handleSave = async () => {
-    setOpen(false);
-    onProfileImageChange({ target: { name: "profileImageFile", value: file } });
-    onImageCropInfoChange({
-      target: { name: "profileImageCropInfo", value: profileImageCropInfo },
-    });
-    if (profileImageCropInfo && file) {
-      const imageSrc = URL.createObjectURL(file);
-      let avatarSize = 240;
-      if (avatarRef.current) {
-        const { width, height } = avatarRef.current.getBoundingClientRect();
-        avatarSize = Math.round(Math.min(width, height));
+      if (!imageUrl && currentImageUrl) {
+        formData.append("originalProfileImageFile", new File([], ""));
+        formData.append("croppedProfileImageBlob", new Blob());
       }
-      const cropped = await getCroppedImage(
-        imageSrc,
-        profileImageCropInfo,
-        avatarSize,
+
+      updateProfile(formData);
+    },
+    [
+      currentImageUrl,
+      currentOriginalImageUrl,
+      defaultValues,
+      getValues,
+      imageUrl,
+      updateProfile,
+    ],
+  );
+
+  const handleProfileImageChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setFile(file);
+        setOpen(true);
+      }
+    },
+    [],
+  );
+
+  const handleClose = useCallback(() => {
+    setFile(getValues("originalProfileImageFile") || null);
+    setOpen(false);
+    setIsEditing(false);
+  }, [getValues]);
+
+  const handleSave = useCallback(
+    async ({
+      imageCropInfo,
+      canvas,
+    }: {
+      imageCropInfo: AvatarImageCropInfo;
+      canvas: HTMLCanvasElement;
+    }) => {
+      setOpen(false);
+      setValue("originalProfileImageFile", file);
+      setValue("profileImageCropInfo", imageCropInfo);
+
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg"),
       );
-      setImageUrl(cropped);
-      URL.revokeObjectURL(imageSrc);
-      return;
-    }
-    setImageUrl(profileImageUrl);
-  };
+
+      if (blob) {
+        setValue("croppedProfileImageBlob", blob);
+        setImageUrl(URL.createObjectURL(blob));
+      }
+    },
+    [file, setValue],
+  );
+
+  const handleDeleteProfileImage = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      setImageUrl("");
+      setFile(null);
+      setValue("originalProfileImageFile", null);
+      setValue("croppedProfileImageBlob", null);
+    },
+    [setValue],
+  );
+
+  const handleEditProfileImage = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      setIsEditing(true);
+      setOpen(true);
+    },
+    [],
+  );
 
   return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.formContainer}>
-          <div className={styles.title}>Profile Settings</div>
-          <form className={styles.form}>
-            <div className={styles.formContent}>
-              <div className={styles.inputContainer}>
-                <LabelInputContainer className={styles.labelInputContainer}>
-                  <Label htmlFor="firstName" className={styles.label}>
-                    First Name
-                  </Label>
-                  <Input
-                    id="firstName"
-                    placeholder="John"
-                    type="text"
-                    {...register("firstName")}
-                    error={firstNameError}
-                  />
-                  <ErrorMsg error={firstNameError} />
-                </LabelInputContainer>
-                <LabelInputContainer className={styles.labelInputContainer}>
-                  <Label htmlFor="lastName" className={styles.label}>
-                    Last Name
-                  </Label>
-                  <Input
-                    id="lastName"
-                    placeholder="Doe"
-                    type="text"
-                    {...register("lastName")}
-                    error={lastNameError}
-                  />
-                  <ErrorMsg error={lastNameError} />
-                </LabelInputContainer>
-                <LabelInputContainer className={styles.labelInputContainer}>
-                  <Label htmlFor="bio" className={styles.label}>
-                    Bio
-                  </Label>
-                  <Textarea
-                    id="bio"
-                    placeholder="Doe"
-                    {...register("bio")}
-                    error={bioError}
-                    className={styles.textarea}
-                  />
-                  <ErrorMsg error={bioError} />
-                </LabelInputContainer>
-              </div>
-              <div>
-                <div className={styles.avatarContainer}>
-                  <Avatar
-                    className={styles.avatar}
-                    src={imageUrl}
-                    initials={firstInitial + lastInitial}
-                    ref={avatarRef}
-                  />
-                  <Button
-                    className={styles.editButton}
-                    onClick={(e) => {
-                      e?.preventDefault();
-                    }}
-                  >
-                    <Pencil className={styles.editIcon} />
-                  </Button>
-                </div>
-                <ErrorMsg error={profileImageFileError} />
-                <div className={styles.uploadContainer}>
-                  <CustomFileUploadInput
-                    animate={false}
-                    onChange={handleProfileImageChange}
-                    setFile={setFile}
-                    file={file}
-                    accept="image/jpeg,image/png,image/webp"
-                  >
-                    <div className={styles.uploadButton}>
-                      <IconUpload className={styles.uploadIcon} />
-                    </div>
-                  </CustomFileUploadInput>
-                  <Button
-                    className={styles.deleteButton}
-                    onClick={(e) => {
-                      e?.preventDefault();
-                      setImageUrl("");
-                      setFile(null);
-                    }}
-                    variant="ghost"
-                  >
-                    <IconTrashXFilled />
-                  </Button>
-                </div>
-              </div>
+    <div className={styles.formContainer}>
+      <div className={styles.title}>Profile Settings</div>
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+        <div className={styles.formContent}>
+          <div className={styles.inputContainer}>
+            <LabelInputContainer className={styles.labelInputContainer}>
+              <Label htmlFor="firstName" className={styles.label}>
+                First Name
+              </Label>
+              <Input
+                id="firstName"
+                placeholder="John"
+                type="text"
+                {...register("firstName")}
+                error={errors.firstName}
+              />
+              <ErrorMsg error={errors.firstName} />
+            </LabelInputContainer>
+
+            <LabelInputContainer className={styles.labelInputContainer}>
+              <Label htmlFor="lastName" className={styles.label}>
+                Last Name
+              </Label>
+              <Input
+                id="lastName"
+                placeholder="Doe"
+                type="text"
+                {...register("lastName")}
+                error={errors.lastName}
+              />
+              <ErrorMsg error={errors.lastName} />
+            </LabelInputContainer>
+
+            <LabelInputContainer className={styles.labelInputContainer}>
+              <Label htmlFor="bio" className={styles.label}>
+                Bio
+              </Label>
+              <Textarea
+                id="bio"
+                placeholder="Tell us about yourself"
+                {...register("bio")}
+                error={errors.bio}
+                className={styles.textarea}
+              />
+              <ErrorMsg error={errors.bio} />
+            </LabelInputContainer>
+          </div>
+
+          <div>
+            <div className={styles.avatarContainer}>
+              <Avatar
+                className={styles.avatar}
+                src={imageUrl}
+                initials={initials}
+                ref={avatarRef}
+              />
+              {(imageUrl || file) && (
+                <Button
+                  className={styles.editButton}
+                  onClick={handleEditProfileImage}
+                  aria-label="Edit profile image"
+                >
+                  <Pencil className={styles.editIcon} />
+                </Button>
+              )}
             </div>
-            <Button type="submit" className={styles.submitButton}>
-              Save
-            </Button>
-          </form>
+
+            <ErrorMsg error={errors.originalProfileImageFile} />
+
+            <div className={styles.uploadContainer}>
+              <CustomFileUploadInput
+                animate={false}
+                onChange={handleProfileImageChange}
+                setFile={setFile}
+                file={file}
+                accept="image/jpeg,image/png,image/webp"
+              >
+                <div className={styles.uploadButton}>
+                  <IconUpload className={styles.uploadIcon} />
+                </div>
+              </CustomFileUploadInput>
+
+              <Button
+                className={styles.deleteButton}
+                onClick={handleDeleteProfileImage}
+                variant="ghost"
+                aria-label="Delete profile image"
+              >
+                <IconTrashXFilled />
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <Button
+          type="submit"
+          className={styles.submitButton}
+          disabled={isBtnDisabled}
+        >
+          Save
+        </Button>
+      </form>
       <ImageCropperModal
         open={open}
         onClose={handleClose}
         onSave={handleSave}
+        imageCropInfo={isEditing ? getValues("profileImageCropInfo") : null}
         image={profileImageUrl}
-        onImageInfoChange={setProfileImageCropInfo}
       />
-    </>
+    </div>
   );
 };
 
-export default ProfileView;
+const ProfileFormWrapper = () => {
+  const { isLoading } = useAuthContext();
+  return (
+    <div className={styles.container}>
+      {isLoading ? <Loader2 className={styles.loader} /> : <ProfileView />}
+    </div>
+  );
+};
+
+export default ProfileFormWrapper;

@@ -1,0 +1,72 @@
+.flexCol {
+  @apply flex flex-col;
+}
+
+.flexCenter {
+  @apply flex items-center justify-center;
+}
+
+.container {
+  @apply flexCenter flex-col items-center p-8 md:h-[calc(100vh-176px)];
+}
+
+.card {
+  @apply flexCol items-center rounded-3xl bg-white p-10 lg:w-auto;
+}
+
+.cardContent {
+  @apply m-4 flex max-w-xl flex-col-reverse items-center lg:flex-row lg:gap-16;
+}
+
+.cardHeader {
+  @apply flexCol items-center rounded-3xl bg-white lg:w-auto;
+}
+
+.cardTitle {
+  @apply text-2xl font-bold;
+}
+
+.leftContent {
+  @apply flexCol gap-4 mt-8 lg:mt-0;
+}
+
+.rightContent {
+  @apply relative inline-block h-60 w-60;
+}
+
+.fieldContainer {
+  @apply w-full;
+}
+
+.value,
+.bio {
+  @apply text-red-500;
+}
+
+.value {
+  @apply max-w-60 break-words;
+}
+
+.bio,
+.skills {
+  @apply max-h-32 max-w-60 overflow-y-auto break-words;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.bio::-webkit-scrollbar {
+  @apply hidden;
+}
+
+.bioPlaceholder,
+.skillsPlaceholder {
+  @apply text-gray-500;
+}
+
+.avatar {
+  @apply h-60 w-60 shadow-xl;
+}
+
+.row {
+  @apply flex min-w-60 gap-4;
+}

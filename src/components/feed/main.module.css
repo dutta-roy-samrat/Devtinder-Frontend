@@ -19,7 +19,7 @@
 }
 
 .cardContent {
-  @apply flex flex-col items-center justify-center gap-4;
+  @apply flex max-w-full flex-col items-center justify-center gap-4;
 }
 
 .cardFooter {
@@ -36,4 +36,14 @@
 
 .feedContainer {
   @apply flex h-[calc(100vh-96px)] items-center justify-center md:h-[calc(100vh-176px)];
+}
+
+.bio {
+  @apply h-32 max-w-full overflow-y-auto break-words;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.bio::-webkit-scrollbar {
+  @apply hidden;
 }
