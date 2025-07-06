@@ -15,6 +15,7 @@ import {
   type ConnectionStatusData,
 } from "@apis/connection";
 import { User } from "types/user";
+import { API_URL } from "@constants/env-variables";
 
 type FeedProps = {
   data: User[];
@@ -57,7 +58,7 @@ const Feed = ({ data, nextCursor }: FeedProps) => {
 
     if (remainingProfiles < DEFAULT_FEED_LIMIT && !eventSourceRef.current) {
       const eventSource = new EventSource(
-        `${process.env.NEXT_PUBLIC_API_URL}/feed/stream?cursor=${nextDataCursor}`,
+        `${API_URL}/feed/stream?cursor=${nextDataCursor}`,
         {
           withCredentials: true,
         },

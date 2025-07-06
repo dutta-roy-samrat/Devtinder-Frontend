@@ -1,10 +1,11 @@
 import AcceptedConnections from "@components/connections/accepted-connections";
+
+import axiosServerInstance from "@services/axios/server";
+
 import { CONNECTION_STATUS } from "@constants/app-defaults";
-import { getAxiosServerInstance } from "@services/axios/server";
 
 const ConnectionsPage = async () => {
-  const axiosInstance = await getAxiosServerInstance();
-  const { data: acceptedConnections } = await axiosInstance.get(
+  const { data: acceptedConnections } = await axiosServerInstance.get(
     "/connections",
     {
       params: {

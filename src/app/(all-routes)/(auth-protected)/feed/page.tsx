@@ -1,9 +1,9 @@
 import Feed from "@components/feed";
-import { getAxiosServerInstance } from "@services/axios/server";
+
+import axiosServerInstance from "@services/axios/server";
 
 const FeedPage = async () => {
-  const axiosInstance = await getAxiosServerInstance();
-  const res = await axiosInstance.get("/feed");
+  const res = await axiosServerInstance.get("/feed");
   const data = res.data;
   return <Feed {...data} />;
 };

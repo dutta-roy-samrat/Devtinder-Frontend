@@ -1,33 +1,34 @@
+"use client";
+
 import NavLinks from "@components/nav-links";
 import NavbarAvatar from "@components/navbar/avatar";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@components/ui/navigation-menu";
-import LogoutButton from "@components/shared/logout-button";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
 
 import styles from "./main.module.css";
 
-const WebNavBar  = () => (
+const WebNavBar = () => (
   <>
     <div className={styles.navLinksContainer}>
       <NavLinks />
     </div>
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className={styles.avatarDropdown}>
-            <NavbarAvatar className={styles.avatar} />
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className={styles.avatarDropdownContent}>
-            <LogoutButton />
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <NavbarAvatar className={styles.avatar} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>My Matches</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   </>
 );
 

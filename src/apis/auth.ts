@@ -22,5 +22,3 @@ export const registerUserApi = async (data: z.infer<typeof RegisterUserSchema>) 
 
 
 
-
-

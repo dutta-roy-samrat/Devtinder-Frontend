@@ -44,7 +44,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: fetchProfile,
-    refetchOnWindowFocus: false,
   });
 
   const { mutate: logout } = useMutation({

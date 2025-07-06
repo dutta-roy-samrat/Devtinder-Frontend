@@ -1,29 +1,9 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { redirect } from "next/navigation";
+import { createAxiosInstance } from "./create-instance";
 
-const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: {
-    "Content-Type": "application/json",
+const axiosClientInstance = createAxiosInstance({
+  setToken: (token: string) => {
+    document.cookie = `accessToken=${token}; path=/; max-age=3600;SameSite=None;Secure`;
   },
-  withCredentials: true,
 });
 
-axiosInstance.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response;
-  },
-  async (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      try {
-        redirect("/login");
-      } catch (refreshError) {
-        return Promise.reject(refreshError);
-      }
-    }
-
-    return Promise.reject(error);
-  },
-);
-
-export default axiosInstance;
+export default axiosClientInstance;

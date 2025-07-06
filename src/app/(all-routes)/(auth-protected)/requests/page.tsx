@@ -1,19 +1,22 @@
 import PendingConnections from "@components/connections/pending-connections";
 import { CONNECTION_STATUS } from "@constants/app-defaults";
-import { getAxiosServerInstance } from "@services/axios/server";
+import axiosServerInstance from "@services/axios/server";
 
 const RequestsPage = async () => {
-  const axiosInstance = await getAxiosServerInstance();
-  const { data: pendingConnections } = await axiosInstance.get(
+  const { data: pendingConnections } = await axiosServerInstance.get(
     "/connections",
     {
       params: {
         connectionStatus: CONNECTION_STATUS.PENDING,
-    }
-  });
-  return <PendingConnections data={pendingConnections.data} nextCursor={pendingConnections.nextCursor}/>;
+      },
+    },
+  );
+  return (
+    <PendingConnections
+      data={pendingConnections.data}
+      nextCursor={pendingConnections.nextCursor}
+    />
+  );
 };
 
 export default RequestsPage;
-
-
