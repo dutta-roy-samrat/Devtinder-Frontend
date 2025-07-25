@@ -21,6 +21,7 @@ axiosInstance.interceptors.request.use(
       .split("; ")
       .find((row) => row.startsWith("refreshToken="))
       ?.split("=")[1];
+    console.log(accessToken, refreshToken);
     if (accessToken) {
       config.headers = config.headers || {};
       config.headers.cookie = `accessToken=${accessToken};refreshToken=${refreshToken};`;

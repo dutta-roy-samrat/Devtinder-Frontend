@@ -19,9 +19,7 @@ export async function POST(request: Request) {
     const setCookie = response.headers["set-cookie"];
     if (setCookie) {
       if (Array.isArray(setCookie)) {
-        setCookie.forEach((cookie) => {
-          res.headers.append("set-cookie", cookie);
-        });
+        setCookie.forEach((cookie) => res.headers.append("set-cookie", cookie));
       } else {
         res.headers.set("set-cookie", setCookie);
       }
