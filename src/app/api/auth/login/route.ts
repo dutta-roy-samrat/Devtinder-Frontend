@@ -5,7 +5,7 @@ import axiosInstance from "@services/axios/client";
 
 function setDomainOnCookie(cookieStr: string) {
   if (/domain=/i.test(cookieStr)) return cookieStr;
-  return cookieStr.replace(/;\s*Path=/i, `; Domain=devtinder-ochre.vercel.app; Path=`);
+  return cookieStr.replace(/;\s*Path=/i, `; Domain=devtinder-backend-zk4v.onrender.com; Path=`);
 }
 
 export async function POST(request: Request) {
