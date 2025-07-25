@@ -18,7 +18,6 @@ export async function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
   const isRefreshValid = refreshToken ? await isTokenValid(refreshToken) : false;
-
   if ([...AUTH_PAGES, "/"].includes(request.nextUrl.pathname)) {
     if (refreshToken && isRefreshValid) {
       return NextResponse.redirect(new URL("/feed", request.url));

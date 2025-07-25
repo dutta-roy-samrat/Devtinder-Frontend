@@ -1,12 +1,10 @@
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { NextResponse } from "next/server";
-
-import axiosServerInstance from "@services/axios/server";
 
 export async function POST(request: Request) {
   const data = await request.json();
   try {
-    const response = await axiosServerInstance.post("/auth/login", data);
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh_token`, data);
     const res = NextResponse.json(
       {
         data: response.data,
