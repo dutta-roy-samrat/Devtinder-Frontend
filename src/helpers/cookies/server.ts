@@ -1,5 +1,3 @@
-"use server";
-
 import { cookies } from "next/headers";
 
 export const getServerCookieByName = (name: string) => {
