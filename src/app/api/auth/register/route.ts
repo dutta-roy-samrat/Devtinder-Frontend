@@ -10,9 +10,12 @@ export async function POST(request: Request) {
     const response = await axiosInstance.post("/auth/register", data);
 
     const res = NextResponse.json({
-      status: 200,
-      data: response.data,
-    });
+        data: response.data,
+      },
+      {
+        status: 200,
+      },
+    );
 
     const setCookie = response.headers["set-cookie"];
     if (setCookie) {
@@ -22,17 +25,28 @@ export async function POST(request: Request) {
         res.headers.set("set-cookie", setCookie);
       }
     }
+
+    console.log(res);
+
     return res;
   } catch (error) {
     if (error instanceof AxiosError) {
-      return NextResponse.json({
-        status: error.status,
-        data: { message: error.message },
-      });
+      return NextResponse.json(
+        {
+          data: { message: error?.response?.data?.message },
+        },
+        {
+          status: error.status,
+        },
+      );
     }
-    return NextResponse.json({
-      status: 500,
-      data: { message: "Internal Server Error" },
-    });
+    return NextResponse.json(
+      {
+        data: { message: "Internal Server Error" },
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }

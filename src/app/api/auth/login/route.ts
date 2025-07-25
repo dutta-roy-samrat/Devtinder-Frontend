@@ -3,35 +3,57 @@ import { NextResponse } from "next/server";
 
 import axiosInstance from "@services/axios/client";
 
+function setDomainOnCookie(cookieStr: string) {
+  if (/domain=/i.test(cookieStr)) return cookieStr;
+  return cookieStr.replace(/;\s*Path=/i, `; Domain=devtinder-ochre.vercel.app; Path=`);
+}
+
 export async function POST(request: Request) {
   const data = await request.json();
-
+  console.log(data, "kklop1");
   try {
     const response = await axiosInstance.post("/auth/login", data);
-    const res = NextResponse.json({
-      status: 200,
-      data: response.data,
-    });
+    const res = NextResponse.json(
+      {
+        data: response.data,
+      },
+      {
+        status: 200,
+      },
+    );
+
+    console.log(res, "kklop");
 
     const setCookie = response.headers["set-cookie"];
     if (setCookie) {
       if (Array.isArray(setCookie)) {
-        setCookie.forEach((cookie) => res.headers.append("set-cookie", cookie));
+        setCookie.forEach((cookie) => {
+          res.headers.append("set-cookie", setDomainOnCookie(cookie));
+        });
       } else {
-        res.headers.set("set-cookie", setCookie);
+        res.headers.set("set-cookie", setDomainOnCookie(setCookie));
       }
     }
     return res;
   } catch (error) {
+    console.log(error, "kklop2");
     if (error instanceof AxiosError) {
-      return NextResponse.json({
-        status: error.status,
-        data: { message: error.message },
-      });
+      return NextResponse.json(
+        {
+          data: { message: error?.response?.data?.message },
+        },
+        {
+          status: error.status,
+        },
+      );
     }
-    return NextResponse.json({
-      status: 500,
-      data: { message: "Internal Server Error" },
-    });
+    return NextResponse.json(
+      {
+        data: { message: "Internal Server Error" },
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }
