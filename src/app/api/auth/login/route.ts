@@ -1,12 +1,12 @@
 import { AxiosError } from "axios";
 import { NextResponse } from "next/server";
 
-import axiosInstance from "@services/axios/client";
+import axiosServerInstance from "@services/axios/server";
 
 export async function POST(request: Request) {
   const data = await request.json();
   try {
-    const response = await axiosInstance.post("/auth/login", data);
+    const response = await axiosServerInstance.post("/auth/login", data);
     const res = NextResponse.json(
       {
         data: response.data,
@@ -26,6 +26,7 @@ export async function POST(request: Request) {
     }
     return res;
   } catch (error) {
+    console.log(error, "kklop");
     if (error instanceof AxiosError) {
       return NextResponse.json(
         {
