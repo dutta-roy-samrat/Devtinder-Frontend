@@ -26,8 +26,6 @@ export async function POST(request: Request) {
       }
     }
 
-    console.log(res);
-
     return res;
   } catch (error) {
     if (error instanceof AxiosError) {

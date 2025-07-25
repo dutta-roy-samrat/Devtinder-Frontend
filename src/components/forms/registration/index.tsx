@@ -70,7 +70,6 @@ const RegistrationForm = () => {
     data,
     e?: React.BaseSyntheticEvent,
   ) => {
-    console.log(data);
     e?.preventDefault();
     registerUser(data as z.output<typeof RegisterUserSchema>);
   };

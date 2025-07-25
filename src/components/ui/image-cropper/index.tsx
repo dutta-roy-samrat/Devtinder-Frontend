@@ -45,8 +45,6 @@ const ImageCropper = ({
     [],
   );
 
-  console.log(image);
-
   return (
     <>
       <div

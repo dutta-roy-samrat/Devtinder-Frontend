@@ -10,7 +10,6 @@ function setDomainOnCookie(cookieStr: string) {
 
 export async function POST(request: Request) {
   const data = await request.json();
-  console.log(data, "kklop1");
   try {
     const response = await axiosInstance.post("/auth/login", data);
     const res = NextResponse.json(
@@ -21,8 +20,6 @@ export async function POST(request: Request) {
         status: 200,
       },
     );
-
-    console.log(res, "kklop");
 
     const setCookie = response.headers["set-cookie"];
     if (setCookie) {
@@ -36,7 +33,6 @@ export async function POST(request: Request) {
     }
     return res;
   } catch (error) {
-    console.log(error, "kklop2");
     if (error instanceof AxiosError) {
       return NextResponse.json(
         {

@@ -5,7 +5,6 @@ import { AUTH_PAGES } from "@constants/app-defaults";
 
 async function isTokenValid(token: string): Promise<boolean> {
   try {
-    console.log(process.env.NEXT_PUBLIC_JWT_SECRET)
     const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET);
     await jwtVerify(token, secret);
     return true;
@@ -21,7 +20,6 @@ export async function middleware(request: NextRequest) {
   const isRefreshValid = refreshToken ? await isTokenValid(refreshToken) : false;
 
   if ([...AUTH_PAGES, "/"].includes(request.nextUrl.pathname)) {
-    console.log("AUTH_PAGES", request.nextUrl.pathname, refreshToken, isRefreshValid);
     if (refreshToken && isRefreshValid) {
       return NextResponse.redirect(new URL("/feed", request.url));
     }
